@@ -1,11 +1,11 @@
-Description: Firefox History
+Description: Firefox History Legacy
 Author: Andrew Rathbun, Reece394
 Email: andrew.d.rathbun@gmail.com
-Id: 2f34be88-08d0-43c1-a2fd-60fe0b71f32b
-Version: 1.2
+Id: e493912d-c5ea-47c7-b9d4-32f7e185931f
+Version: 1.0
 CSVPrefix: Firefox
 FileName: places.sqlite
-IdentifyQuery: SELECT (SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND (name='moz_historyvisits' OR name='moz_bookmarks' OR name='moz_places' OR name='moz_inputhistory')) + (SELECT CASE WHEN (SELECT COUNT(*) FROM pragma_table_info('moz_places') WHERE name IN ('description','preview_image_url')) > 1 THEN 1 ELSE 0 END);
+IdentifyQuery: SELECT (SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND (name='moz_historyvisits' OR name='moz_bookmarks' OR name='moz_places' OR name='moz_inputhistory')) + (SELECT CASE WHEN (SELECT COUNT(*) FROM pragma_table_info('moz_places') WHERE name IN ('description','preview_image_url')) > 1 THEN 0 ELSE 1 END);
 IdentifyValue: 5
 Queries:
     -
@@ -19,7 +19,6 @@ Queries:
                 moz_places.visit_count AS VisitCount,
                 moz_places.url AS URL,
                 moz_places.title AS Title,
-                moz_places.description AS Description,
                 CASE
 
                 WHEN moz_historyvisits.visit_type = 1 THEN
@@ -55,8 +54,7 @@ Queries:
                 WHEN moz_places.typed = 1 THEN
                 'Yes'
                 END AS Typed,
-                moz_places.frecency AS Frecency,
-                moz_places.preview_image_url AS PreviewImageURL
+                moz_places.frecency AS Frecency
                 FROM
                 moz_places
                 INNER JOIN moz_historyvisits ON moz_places.id = moz_historyvisits.place_id
